@@ -2851,6 +2851,14 @@ def exit(ret):
     sys.exit(ret)
 
 
+def init():
+    global inittime, update, missed
+
+    inittime = time.time()
+    update = 0
+    missed = 0
+
+
 def main():
     "Initialization of the program, terminal, internal structures"
     global cpunr, hz, maxint, ownpid, pagesize
@@ -3032,10 +3040,8 @@ def main():
         outputfile.write(csvheader(totlist))
 
     scheduler = sched.scheduler(time.time, time.sleep)
-    inittime = time.time()
 
-    update = 0
-    missed = 0
+    init()
 
     # Let the games begin
     while update <= op.delay * (op.count-1) or op.count == -1:
@@ -3050,24 +3056,16 @@ def main():
         sys.stdout.write('\n')
 
 
-def perform(update):
-    "Inner loop that calculates counters and constructs output"
-    global totlist, oldvislist, vislist, showheader, rows, cols
-    global elapsed, totaltime, starttime
-    global loop, step, missed
+def cycle(update):
+    global loop, step, missed, elapsed, totaltime, starttime
 
     starttime = time.time()
 
     loop = int((update - 1 + op.delay) / op.delay)
     step = ((update - 1) % op.delay) + 1
 
-    # Get current time (may be different from schedule) for debugging
-    if not op.debug:
-        curwidth = 0
-    else:
-        if step == 1 or loop == 0:
-            totaltime = 0
-        curwidth = 8
+    if op.debug and (step == 1 or loop == 0):
+        totaltime = 0
 
     # FIXME: This is temporary functionality, we should do this better
     # If it takes longer than 500ms, than warn !
@@ -3078,12 +3076,31 @@ def perform(update):
     # Initialise certain variables
     if loop == 0:
         elapsed = ticks()
+    else:
+        elapsed = step
+
+
+def perform(update):
+    "Inner loop that calculates counters and constructs output"
+    global totlist, oldvislist, vislist, showheader, rows, cols
+    global elapsed, totaltime, starttime
+    global loop, step, missed
+
+    # Get current time (may be different from schedule) for debugging
+    if not op.debug:
+        curwidth = 0
+    else:
+        curwidth = 8
+
+    # hacky propagation
+    if cycle(update) == 0:
+        return 0
+
+    if loop == 0:
         rows, cols = 0, 0
         vislist = []
         oldvislist = []
         showheader = True
-    else:
-        elapsed = step
 
     # FIXME: Make this part smarter
     if sys.stdout.isatty():
