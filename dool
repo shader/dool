@@ -16,7 +16,7 @@
 
 # Copyright 2004-2019 Dag Wieers <dag@wieers.com>
 
-from __future__ import absolute_import, division, generators, print_function
+
 __metaclass__ = type
 
 import fnmatch
@@ -59,7 +59,7 @@ PY3 = sys.version_info[0] == 3
 if PY3:
     string_types = str,
 else:
-    string_types = basestring,
+    string_types = str,
 
 
 class Options:
@@ -2861,7 +2861,7 @@ def main():
     cpunr = getcpunr()
     hz = os.sysconf('SC_CLK_TCK')
     try:
-        maxint = (sys.maxint + 1) * 2
+        maxint = (sys.maxsize + 1) * 2
     except:
         # Support Python 3
         maxint = float("inf")
