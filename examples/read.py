@@ -1,43 +1,48 @@
 #!/usr/bin/python
 
-### Example 1: Direct accessing stats
-### This is a quick example showing how you can access dstat data
-### If you're interested in this functionality, contact me at dag@wieers.com
+# Example 1: Direct accessing stats
+# This is a quick example showing how you can access dool data
+# If you're interested in this functionality, contact me at dag@wieers.com
+import dool
 import sys
-sys.path.insert(0, '/usr/share/dstat/')
-import dstat
+sys.path.insert(0, '/usr/share/dool/')
 
-### Set default theme
-dstat.theme = dstat.set_theme()
+# Set default theme
+dool.theme = dool.set_theme()
 
-clear = dstat.ansi['reset']
-dstat.tick = dstat.ticks()
+clear = dool.ansi['reset']
+dool.tick = dool.ticks()
 
-c = dstat.dstat_cpu()
-print c.title() + '\n' + c.subtitle()
+c = dool.dool_cpu()
+c.prepare()
+print(c.title() + '\n' + c.subtitle())
 c.extract()
-print c.show(), clear
-print 'Percentage:', c.val['total']
-print 'Raw:', c.cn2['total']
-print
+print(c.show(), clear)
+print('Percentage:', c.val['total'])
+print('Raw:', c.set2['total'])
+print()
 
-m = dstat.dstat_mem()
-print m.title() + '\n' + m.subtitle()
+m = dool.dool_mem()
+m.prepare()
+print(m.title() + '\n' + m.subtitle())
 m.extract()
-print m.show(), clear
-print 'Raw:', m.val
-print
+print(m.show(), clear)
+print('Raw:', m.val)
+print()
 
-l = dstat.dstat_load()
-print l.title() + '\n' + l.subtitle()
+l = dool.dool_load()
+l.prepare()
+print(l.title() + '\n' + l.subtitle())
 l.extract()
-print l.show(), clear
-print 'Raw:', l.val
-print
+print(l.show(), clear)
+print('Raw:', l.val)
+print()
 
-d = dstat.dstat_disk()
-print d.title() + '\n' + d.subtitle()
+d = dool.dool_disk()
+d.prepare()
+dool.cycle(0)
+print(d.title() + '\n' + d.subtitle())
 d.extract()
-print d.show(), clear
-print 'Raw:', d.val['total']
-print
+print(d.show(), clear)
+print('Raw:', d.val['total'])
+print()
