@@ -2706,13 +2706,13 @@ def dev(maj, min):
     cciss = [104, ]
     dm = [253, ]
     if maj in scsi:
-        disc = chr(ord('a') + scsi.index(maj) * 16 + min / 16)
+        disc = chr(ord('a') + scsi.index(maj) * 16 + min // 16)
         part = min % 16
         if not part:
             return 'sd%s' % disc
         return 'sd%s%d' % (disc, part)
     elif maj in ide:
-        disc = chr(ord('a') + ide.index(maj) * 2 + min / 64)
+        disc = chr(ord('a') + ide.index(maj) * 2 + min // 64)
         part = min % 64
         if not part:
             return 'hd%s' % disc
